@@ -23,6 +23,7 @@ int getch(void);							// 엔터없이 입력
 int getMap(void);							// 맵불러오기
 void setMap(char n[12]);					// 맵 출력
 int onGame(char name[12]);					// 게임 
+void mv(int ch, char name[12]);				// 움직이기
 
 // 해야할것
 void undo(void);
@@ -30,7 +31,6 @@ void save();
 void load();
 void display(void);
 void top(int);
-void mv(int ch, char name[12]);
 //
 
 
@@ -163,13 +163,28 @@ void setMap(char n[12]){
 	}
 	
 	printf("\n\n\n(Command) ");
+	
 	return;
 
 }
 
 void mv(int ch, char name[12]){
+	
+	static int t;
 	int tmpx = x, tmpy = y;
-	char isS[12] = {'$'};
+	
+	char isS[12] = {0};
+
+	t=0;
+	if(name[10] == '$'){
+		switch(ch){
+			case 'h' : tmpx--; break;
+			case 'l' : tmpx++; break;
+			case 'j' : tmpy++; break;
+			case 'k' : tmpy--; break;
+			default : break;
+		}
+	}	
 	switch(ch){
 		case 'h' : tmpx--; break;
 		case 'l' : tmpx++; break;
@@ -183,23 +198,35 @@ void mv(int ch, char name[12]){
 		case 'O' : 
 			if(name[10] != '$'){
 				curMap[tmpy][tmpx]='@';
-				if(allMap[lvl][y][x]=='@')
-					curMap[y][x]='.';
-				else
+				if(allMap[lvl][y][x]=='O')
 					curMap[y][x]=allMap[lvl][y][x];
+				else
+					curMap[y][x]='.';
 			}
-			else
+			else{
 				curMap[tmpy][tmpx]='$';
+				t++;
+			}
 			break;
-		case '$' : 
-			if(name[10] != '$')
+		case '$' :
+			if(name[10] != '$'){
+				isS[10] = '$';
+
 				mv(ch, isS);
+				if(t==1){
+					curMap[tmpy][tmpx]='@';
+					if(allMap[lvl][y][x]=='O')
+						curMap[y][x]=allMap[lvl][y][x];
+					else
+						curMap[y][x]='.';
+				}
+			}
 			break;
 		case '#' :
 		default : break;
 	}
-	
-	setMap(name);
+	if(name[10] != '$')	
+		setMap(name);
 
 	return;
 }
