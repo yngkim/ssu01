@@ -6,11 +6,9 @@
 	/*
 	 *  Sokoban / 19.05.30
 	 *
-	 *	Who made? Mj Cho, Dn Seo, Gw Lee, Yg
- Kim.
+	 *	Who made? Mj Cho, Dn Seo, Gw Lee, Yg Kim.
 	 *
-	 *	@:Player,  #:Wall,  $:Gold,  O:S
-afe,  .:Blank
+	 *	@:Player,  #:Wall,  $:Gold,  O:Safe,  .:Blank
 	 *
 	*/
 
@@ -170,7 +168,6 @@ void setMap(char n[12]){
 
 void mv(int ch, char name[12]){
 	
-	static int t;
 	int tmpx = x, tmpy = y;
 	
 	char isS[12] = {0};
@@ -232,15 +229,23 @@ void mv(int ch, char name[12]){
 }
 int onGame(char name[12]){
 	
-	int steps = 0;
+	int steps;
+	int undoArr[2][5];
 
-	isOnGame = 1;	
 
+	//게임 값 초기화
+	for(int i=0; i<2; i++)
+		for(int j=0; j<5; j++)
+			undoArr[i][j] = {0};
+	steps = 0;	
 	for(int i = 0; i < 31; i++){
 		for(int j = 0; j < 31; j++){
 			curMap[i][j]=allMap[lvl][i][j];
 		}
 	}
+
+	//게임 시작
+	isOnGame = 1;
 
 	setMap(name);
 
@@ -261,18 +266,43 @@ int onGame(char name[12]){
 			case 'e' : break;
 			case 's' : break;
 			case 'f' : break;
-			case 'd' : break;
+			case 'd' : display(); setMap(name); break;	//명령어
 			case 't' : break;
 			default : break;
 		}
 
 	}while(isOnGame == 1);
-
+	
 	return steps;
 }
 
+void display(void){
+	int ch = '0';
+	
+	system("clear");
+	
+	printf("* * * * * * * * * * * * * * * * * * *\n");
+	printf("*              Command              *\n");
+	printf("*                                   *\n");
+	printf("* h(up), j(left), k(right), l(down) *\n");
+	printf("* u(undo)                           *\n");
+	printf("* r(retry current stage)            *\n");
+	printf("* n(new game)                       *\n");
+	printf("* e(exit game)                      *\n");
+	printf("* s(save current)                   *\n");
+	printf("* f(load saved file)                *\n");
+	printf("* d(display Command)                *\n");
+	printf("* t(top ranking)                    *\n");
+	printf("*                                   *\n");
+	printf("* * * * * * * * * * * * * * * * * * *\n\n\n");
+	printf("press q to quit");
 
-
+	do{
+		ch = getch();
+	}while(ch != 'q' || ch != 'Q');
+	
+	return;
+}
 
 
 
