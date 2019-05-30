@@ -7,7 +7,7 @@ void top(int)
 
 	int score, level; //level 입력받아야됨 아직은
 	int save_rank[5]; //순위 바뀔 때 기존 순위 임시 저장
-	char new_name, name[5];
+	char new_name, name[5]; //문자 다루는 법?
 
 	int rank[5][5];
 
@@ -22,10 +22,4 @@ void top(int)
 		}
 	}
 
-	if (score > rank[level-1][4]){ // 지우기 전에 참고함
-		rank[level-1][4] = score;
-		if (score > rank[level-1][3]){
-			rank[level-1][3] = score;
-			if (score > rank[level-1][2]){
-				rank[level-1][2] = score;
-				if (score > rank[level-1
+	
