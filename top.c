@@ -5,14 +5,22 @@ void top(int)
 {
 	FILE *ranking.txt;  //텍스트 파일 그냥 만들면 되는지?
 
-	int score, level;
+	int score, level; //level 입력받아야됨 아직은
+	int save_rank[5]; //순위 바뀔 때 기존 순위 임시 저장
 	char new_name, name[5];
 
 	int rank[5][5];
 
-	for (int i=4;i>=0;i--){ // 이렇게 되면 모든 순위가 score가 됨.
-		if (score > rank[level-1][i]) 
-			rank[level-1][i] = score; // 수정 필요함
+	for (int k=4;k>=0;i--){
+		save_rank[k] = rank[level-1][k]; //기존 순위 임시로 복사
+
+	for (int i=4;i>=0;i--){ //점수와 기존 순위가 같을 때는?
+		if (score > rank[level-1][i]){
+			rank[level-1][i] = score; //점수를 랭킹에 복사
+			if (i<=3)
+				rank[level-1][i+1] = save_rank[i]; //기존 순위를 한 단계 밑으로 저장
+		}
+	}
 
 	if (score > rank[level-1][4]){ // 지우기 전에 참고함
 		rank[level-1][4] = score;
