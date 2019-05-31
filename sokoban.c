@@ -22,12 +22,12 @@ int getMap(void);							// 맵불러오기
 void setMap(char n[12]);					// 맵 출력
 int onGame(char name[12]);					// 게임 
 void mv(int ch, char name[12]);				// 움직이기
+void display(void);							// 명령어 보기
 
 // 해야할것
 void undo(void);
-void save();
+void save(int m[31][31]);
 void load();
-void display(void);
 void top(int);
 //
 
@@ -58,7 +58,7 @@ int main(void){
 }
 
 
-int getch(void){
+int getch(void){					// 엔터 없이 입력
 	int ch;
 
 	struct termios buf;
@@ -77,9 +77,9 @@ int getch(void){
 	tcsetattr(0, TCSAFLUSH, &save);
 
 	return ch;
-}
+}	
 
-int getMap(void){
+int getMap(void){					// map 파일에서 맵 가져오기
 	
 	int c, lvls = 0, i = 0, j = 0, cmp = 0;
 
@@ -137,7 +137,7 @@ int getMap(void){
 }
 
 
-void setMap(char n[12]){
+void setMap(char n[12]){					// 맵 최신화, 출력
 	
 	int i,j;
 	
@@ -168,11 +168,12 @@ void setMap(char n[12]){
 
 void mv(int ch, char name[12]){
 	
+	static int checkgoldmv;					// 금을 움직여야 하는지 체크하는 변수
 	int tmpx = x, tmpy = y;
 	
 	char isS[12] = {0};
 
-	t=0;
+	checkgoldmv = 0;
 	if(name[10] == '$'){
 		switch(ch){
 			case 'h' : tmpx--; break;
@@ -202,15 +203,15 @@ void mv(int ch, char name[12]){
 			}
 			else{
 				curMap[tmpy][tmpx]='$';
-				t++;
+				checkgoldmv ++;
 			}
 			break;
 		case '$' :
 			if(name[10] != '$'){
 				isS[10] = '$';
 
-				mv(ch, isS);
-				if(t==1){
+				mv(ch, isS);						// 금 앞에 무엇이 있는지 재귀함수를 통해 판단
+				if(checkgoldmv == 1){
 					curMap[tmpy][tmpx]='@';
 					if(allMap[lvl][y][x]=='O')
 						curMap[y][x]=allMap[lvl][y][x];
@@ -236,7 +237,7 @@ int onGame(char name[12]){
 	//게임 값 초기화
 	for(int i=0; i<2; i++)
 		for(int j=0; j<5; j++)
-			undoArr[i][j] = {0};
+			undoArr[i][j] = 0;
 	steps = 0;	
 	for(int i = 0; i < 31; i++){
 		for(int j = 0; j < 31; j++){
@@ -276,7 +277,7 @@ int onGame(char name[12]){
 	return steps;
 }
 
-void display(void){
+void display(void){							// 커맨드 보기
 	int ch = '0';
 	
 	system("clear");
@@ -304,7 +305,18 @@ void display(void){
 	return;
 }
 
-
+void save(int m[31][31]){
+	
+	FILE *ofp;
+	
+	ofp = fopen("sokoban", "w");
+	
+	
+	
+	fclose(ofp);
+	
+	return;
+}
 
 
 
